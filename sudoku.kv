@@ -1,3 +1,44 @@
 #:kivy 1.11.1
+#:import Row core.layout.Row
+#:import Column core.layout.Row
+
+#:import Grid widgets.Grid
 
 #:include widgets/tile.kv
+
+<Menu>:
+
+    easy: easy
+    medium: medium
+    hard: hard
+    exit: exit
+
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Column:
+        Label:
+            font_size: 56
+            text: 'SUDOKU'
+            color: 0, 0, 0, 1
+            size_hint_y: 0.7
+        Column:
+            padding: 300, 20
+            size_hint_y: 0.3
+            Button:
+                id: easy
+                text: 'EASY'
+            Button:
+                id: medium
+                text: 'MEDIUM'
+            Button:
+                id: hard
+                text: 'HARD'
+            Button:
+                id: exit
+                text: 'EXIT'
+

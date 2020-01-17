@@ -40,3 +40,16 @@ class Checker:
                 repeated += value
 
         return repeated
+
+    @staticmethod
+    def zeroes(tiles):
+        mapped = {0: []}
+
+        for tile in tiles:
+            value = tile.current
+            try:
+                mapped[value] += [tile]
+            except KeyError:
+                mapped[value] = [tile]
+
+        return mapped[0]

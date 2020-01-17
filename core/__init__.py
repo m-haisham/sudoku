@@ -1,5 +1,6 @@
 from kivy.graphics import Color
 
+from .navigation import Navigation
 
 class Colors:
     WHITE = Color(1, 1, 1, 1)

@@ -1,15 +1,18 @@
 
 class GridIterator:
-    def __init__(self, grid):
+    def __init__(self, grid, shift=0):
         self.grid = grid
 
         self.forward = True
         self.i = 0
 
-        self.tiles = []
+        copy = []
         for x in range(len(self.grid)):
             for y in range(len(self.grid[0])):
-                self.tiles.append(self.grid[x][y])
+                copy.append(self.grid[x][y])
+
+        self.tiles = copy[shift:]
+        self.tiles += copy[:shift]
 
     def back(self):
         self.i -= 2
@@ -28,10 +31,10 @@ class GridIterator:
 
         if self.forward:
             while True:
-                tile = self.tiles[self.i]
-
                 if self.i >= len(self.tiles):
                     raise StopIteration
+
+                tile = self.tiles[self.i]
                 if tile.selectable:
                     break
 
