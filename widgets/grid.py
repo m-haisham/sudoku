@@ -1,7 +1,12 @@
+from kivy.core.window import Window, Keyboard
 from kivy.uix.gridlayout import GridLayout
 from kivy.vector import Vector
 
+from core import Colors
+from logic import DepthFirst, Blink
+from logic.checker import Checker
 from .subgrid import SubGrid
+from .key import Number
 
 
 class Grid(GridLayout):
@@ -15,9 +20,15 @@ class Grid(GridLayout):
 
         self.selected = None
 
+        self.grid = []
         self.block = {}
         self.row = {}
         self.col = {}
+
+        self.depth_first = DepthFirst(self.grid, self.block, self.row, self.col, dramatic=True)
+        self.depth_first.setDaemon(True)
+
+        Window.bind(on_key_up=self._on_key_up)
 
         for i in range(self.rows * self.cols):
             subgrid = SubGrid(callback=self.callback)
@@ -31,13 +42,14 @@ class Grid(GridLayout):
 
             self.add_widget(subgrid)
 
-        self.grid = []
+        # initialization
         for i in range(9):
             self.grid.append([None] * 9)
 
             self.row[i] = []
             self.col[i] = []
 
+        # grid fill and data identification
         for subgrid_no, subgrid in enumerate(self.children):
 
             block = Vector(subgrid_no % 3, int(subgrid_no / 3))
@@ -56,16 +68,47 @@ class Grid(GridLayout):
 
                 self.grid[x][y] = tile
 
+    def _on_key_up(self, instance, keycode, scancode):
+        number = Number.mapper(keycode)
+        if number is not None:
+
+            if self.selected is not None:
+                self.selected.review = number
+
+            return False
+
+        elif keycode == 13 or keycode == 271:  # enter
+            tile = self.selected
+
+            checkings = set(self.block[tuple(tile.block)] + self.row[tile.coords[0]] + self.col[tile.coords[1]])
+            repeats = Checker.specific(checkings, smart=True)
+            if repeats:
+                for tile in repeats:
+                    Blink(tile, Colors.lerp((tile.review + 1) / 12, Colors.RED, Colors.WHITE).rgba).start()
+                return
+
+            tile.current, tile.review = tile.review, 0
+
+            for tile in checkings:
+                if tile.current != 0 or tile.review != 0:
+                    Blink(tile, Colors.GREEN.rgba, 0.5).start()
+
+        elif keycode == 32:  # spacebar
+            self.depth_first.start()
+
     def callback(self, instance):
+        # self.grid[0][0].current = 3
+        # self.grid[0][0].selectable = False
+        # self.depth_first.start()
+        # return
+        if not instance.selectable:
+            return
+
         if self.selected is not None:
             self.selected.selected = False
 
         instance.selected = True
         self.selected = instance
-
-        instance.current, instance.review = instance.review, instance.current + 1
-        if instance.current > 3:
-            self.print_grid(self.grid, key=lambda value: value.current)
 
     @staticmethod
     def print_grid(grid, key=None):

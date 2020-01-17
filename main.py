@@ -1,12 +1,10 @@
-from random import randint
-
 from kivy import Config
 from kivy.app import App
-from kivy.properties import NumericProperty, ReferenceListProperty, Clock, ObjectProperty
-from kivy.uix.widget import Widget
-from kivy.vector import Vector
 
 from widgets import Grid
+
+Config.set('graphics', 'width', '700')
+Config.set('graphics', 'height', '700')
 
 
 class SudokuApp(App):
@@ -18,7 +16,4 @@ class SudokuApp(App):
 
 
 if __name__ == '__main__':
-    Config.set('graphics', 'width', '700')
-    Config.set('graphics', 'height', '700')
-
     SudokuApp().run()

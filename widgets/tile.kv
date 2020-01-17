@@ -6,7 +6,7 @@
     canvas.before:
         # border
         Color:
-            rgba: self.border_color if self.selected else (0, 0, 0, 1)
+            rgba: self.border_color if self._selected else (0, 0, 0, 1)
         Rectangle:
             pos: self.center_x - self.width / 2, self.center_y - self.height / 2
             size: self.size
@@ -15,8 +15,8 @@
         Color:
             rgba: self.color
         Rectangle:
-            pos: self.center_x - self.width / 2 + (self.border_width if root.selected else 0), self.center_y - self.height / 2 + (self.border_width if root.selected else 0)
-            size: self.width - self.border_width * (4 if root.selected else 1), self.height - self.border_width * (4 if root.selected else 1)
+            pos: self.center_x - self.width / 2 + (self.border_width if root._selected else 0), self.center_y - self.height / 2 + (self.border_width if root._selected else 0)
+            size: self.width - self.border_width * (4 if root._selected else 1), self.height - self.border_width * (4 if root._selected else 1)
 
     Label:
         font_size: 18
@@ -30,7 +30,7 @@
         center_x: root.center_x
         center_y: root.center_y
         text: str(root.current) if root.current != 0 else ''
-        color: 0, 0, 0, 1
+        color: (0, 0, 0, 1) if root.review == 0 else root.faded
 
     Button:
         id: button
