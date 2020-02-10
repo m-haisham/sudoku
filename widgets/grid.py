@@ -27,7 +27,7 @@ class Grid(GridLayout):
         self.row = {}
         self.col = {}
 
-        self.depth_first = DepthFirst(self.grid, self.block, self.row, self.col, dramatic=False)
+        self.depth_first = DepthFirst(self.grid, self.block, self.row, self.col, callback=self.reset_algorithm, dramatic=False)
 
         Window.bind(on_key_up=self._on_key_up, on_key_down=self._on_key_down)
 
@@ -70,6 +70,10 @@ class Grid(GridLayout):
                 self.col[y].append(tile)
 
                 self.grid[x][y] = tile
+
+    def reset_algorithm(self):
+        self.depth_first = DepthFirst(self.grid, self.block, self.row, self.col, callback=self.reset_algorithm,
+                                      dramatic=True)
 
     def _on_key_down(self, instance, keycode, scancode, *args):
         if keycode == 273 and self.selected is not None:  # up
@@ -154,7 +158,7 @@ class Grid(GridLayout):
                 tile = tiles[i]
                 tile.current = 0
 
-            self.depth_first = DepthFirst(self.grid, self.block, self.row, self.col, dramatic=True)
+            self.depth_first = DepthFirst(self.grid, self.block, self.row, self.col, callback=self.reset_algorithm, dramatic=True)
             callback()
 
         amount = int(percentile * 81)
